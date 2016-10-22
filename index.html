@@ -1,0 +1,142 @@
+<!DOCTYPE>
+<html>
+<!--
+author:Ting Wei Lin
+-->
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0" />
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="#ccffee" />
+    <title>touch-mouse-拖曳元件</title>
+    <link href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQAQMAAAAlPW0iAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6Q0MyMTA0QTY5ODIzMTFFNkI5RDJENUFFNEUzMUE5QzUiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6Q0MyMTA0QTU5ODIzMTFFNkI5RDJENUFFNEUzMUE5QzUiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoV2luZG93cykiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmRpZDo3NUI5ODgxQTIzOThFNjExODJFOUY4ODlEMzM4NTI2OSIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDo3NUI5ODgxQTIzOThFNjExODJFOUY4ODlEMzM4NTI2OSIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PhZ6tWYAAAAGUExURYfDr8z/7lFMW94AAAARSURBVAjXY2AAA/s/hBEYAABeMQ7FwYxZrgAAAABJRU5ErkJggg==" rel="icon" type="image/x-icon">
+    <!--    offical css start    -->
+    <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet" />
+    <!--    offical css end      -->
+    <style>
+    body {
+        background-color: #fff;
+        width: 100%;
+        height: 100%;
+        text-align: center;
+    }
+    
+    .title {
+        color: #d3d3d3;
+        line-height: 150%;
+    }
+    
+    .sub-title {
+        color: #ccc;
+    }
+    
+    #dragItem {
+        width: 100px;
+        height: 100px;
+        background-color: #ccffee;
+        position: fixed;
+        line-height: 100px;
+        text-align: center;
+        box-shadow: 8px 8px 6px 2px rgba(0, 51, 34, .15);
+        top: calc(50% - 50px);
+        right: calc(50% - 50px);
+        text-shadow: 1px 1px 3px #fff;
+        color:#555;
+    }
+    </style>
+    <!--    custom css end      -->
+    <script src="js/jquery/jquery.min.js" type="text/javascript"></script>
+    <script src="js/bootstrap/bootstrap.min.js" type="text/javascript"></script>
+    <!--    offical js end      -->
+    <!--    custom js end      -->
+</head>
+
+<body>
+<div style="position:absolute;top:0;width: 100%;">
+        <h4 class="sub-title"><small class="title">touch / mouse<br>拖曳元件</small></h4>
+    </div>
+    <div style="position:absolute;bottom:0;width: 100%;">
+        <h4 class="sub-title">fixed right bottom in css</h4>
+    </div>
+    <div id="dragItem" style="">Drag me</div>
+</body>
+<script>
+$(function() {
+
+    var dragItem = $('#dragItem');
+    var window_Width = $(window).width();
+    var window_Height = $(window).height();
+    var oW, oH; // item width & height
+    var topInherit;
+    var startX = 0,
+        startY = 0,
+        b, r, x, y;
+
+    dragItem.on('touchstart mousedown', function(e) {
+
+        event.preventDefault();
+        var oLeftAddWidth,
+
+            t = e.originalEvent.type == 'mousedown' ? e.originalEvent : e.originalEvent.touches[0],
+            pageX = t.pageX,
+            pageY = t.pageY;
+        if (!x) {
+            x = dragItem.offset().left;
+        }
+        if (!y) {
+            y = dragItem.offset().top;
+        }
+        startX = pageX - x;
+        startY = pageY - y;
+        window_Height = $(window).height();
+
+
+        if (!oW) {
+            oW = dragItem.width();
+        }
+        if (!oH) {
+            oH = dragItem.height();
+        }
+        if (!topInherit) {
+            dragItem.css({
+                'top': 'inherit',
+                'bottom': window_Height - (y + oH)
+            })
+        }
+        dragItem.on('touchmove mousemove', touchmove);
+        dragItem.on('touchend mouseup', touchend);
+    });
+
+    function touchmove(e) {
+
+        var oLeftAddWidth,
+            t = e.originalEvent.type == 'mousemove' ? e.originalEvent : e.originalEvent.touches[0],
+            pageX = t.pageX,
+            pageY = t.pageY;
+        y = pageY - startY;
+        x = pageX - startX;
+        x = (x + oW) > window_Width ? (window_Width - oW) : (x < 0 ? 0 : x);
+        y = (y + oH) > window_Height ? (window_Height - oH) : (y < 0 ? 0 : y);
+        r = window_Width - (oW + x);
+        t = y;
+        b = window_Height - (oH + y);
+
+        dragItem.css({
+            'right': r,
+            'bottom': b
+        });
+
+    }
+
+    function touchend(e) {
+        dragItem.off('touchmove mousemove', touchmove);
+        dragItem.off('touchend mouseup', touchend);
+    }
+
+});
+</script>
+
+</html>
